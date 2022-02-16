@@ -1,21 +1,22 @@
 const express = require("express");
-const mysql = require("mysql2");
+// const mysql = require("mysql2");
+const { pool } = require("./config");
 var cors = require("cors");
 const app = express();
 const port = 3000;
 app.use(cors());
 app.use(express.json());
-var connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "newslang",
-  database: "test_todo",
-});
+// var pool = mysql.createpool({
+//   host: "localhost",
+//   user: "root",
+//   password: "newslang",
+//   database: "test_todo",
+// });
 
-connection.connect();
+// pool.connect();
 
 app.get("/todo", (req, res) => {
-  connection.query("SELECT * from todos", function (err, rows, fields) {
+  pool.query("SELECT * from todos", function (err, rows, fields) {
     if (err) throw err;
     res.send(rows);
   });
@@ -26,8 +27,8 @@ app.post("/todo", (req, res) => {
     name: req.body.name,
     description: req.body.description,
   };
-  connection.query(
-    "INSERT INTO todos (name, description) VALUES (?, ?) ",
+  pool.query(
+    "INSERT INTO todos (name, description) VALUES ($1, $2) ",
     [newToDo.name, newToDo.description],
     function (err, rows, fields) {
       if (err) throw err;
@@ -37,8 +38,8 @@ app.post("/todo", (req, res) => {
 });
 
 app.put("/todo", (req, res) => {
-  connection.query(
-    "UPDATE todos SET completed = (?) WHERE id = (?)",
+  pool.query(
+    "UPDATE todos SET completed = ($1) WHERE id = ($2)",
     [req.body.completed, req.body.id],
     function (err, rows, fields) {
       if (err) throw err;
@@ -48,8 +49,8 @@ app.put("/todo", (req, res) => {
 });
 
 app.delete("/todo", (req, res) => {
-  connection.query(
-    "DELETE FROM todos WHERE id = (?)",
+  pool.query(
+    "DELETE FROM todos WHERE id = ($1)",
     [req.body.id],
     (err, rows, fields) => {
       if (err) throw err;
