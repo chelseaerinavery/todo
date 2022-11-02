@@ -1,0 +1,12 @@
+PUT http://localhost:3000/todo HTTP/1.1
+content-type: application/json
+
+{
+    "id": "37",
+    "name": "I don't appreciate that",
+    "description": "what the hey"
+}
+
+###
+
+GET http://localhost:3000/todo
