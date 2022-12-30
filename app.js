@@ -3,7 +3,16 @@ const { pool } = require("./config");
 var cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3000;
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://todofe.onrender.com",
+      "https://todofe.onrender.com",
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.get("/todo", (req, res) => {
