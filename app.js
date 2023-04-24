@@ -3,18 +3,25 @@ const { pool } = require("./config");
 var cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3000;
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "http://todofe.onrender.com",
-      "https://todofe.onrender.com",
-      null
-    ],
-    credentials: true,
-  })
-);
-app.use(cors())
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors())
+}
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(
+    cors({
+      origin: [
+        "http://localhost:3000",
+        "http://todofe.onrender.com",
+        "https://todofe.onrender.com",
+        null
+      ],
+      credentials: true,
+    })
+  );
+}
+
 app.use(express.json());
 
 app.get("/todo", (req, res) => {
